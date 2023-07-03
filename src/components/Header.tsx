@@ -1,8 +1,12 @@
+import Link from "next/link";
+
 export default function Header() {
   return (
     <>
       <header>
-        <h1>Pokemon図鑑</h1>
+        <Link href="/">
+          <h1>ポケモン図鑑</h1>
+        </Link>
       </header>
     </>
   );

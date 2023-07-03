@@ -1,12 +1,11 @@
-import Head from "next/head";
-import Image from "next/image";
-import styles from "@/styles/Home.module.css";
+import React, { useEffect, useState } from "react";
+import { PokemonList } from "@/components/templates/pokemon/getlist";
 
 export default function Home() {
   return (
     <>
       <div>
-        <p>Hello</p>
+        <PokemonList first={10} />
       </div>
     </>
   );

@@ -20,12 +20,6 @@ interface PokemonListProps {
   name?: string;
 }
 
-interface Pokemon {
-  id: string;
-  name: string;
-  image: string;
-}
-
 export const PokemonList: React.FC<PokemonListProps> = ({ first, name }) => {
   let POKEMON_QUERY: any;
 

@@ -6,13 +6,20 @@ interface PokemonDetailProps {
   id: string;
 }
 
+interface Pokemon {
+  id: string;
+  number: string;
+  name: string;
+  image: string;
+}
+
 export const PokemonDetail: React.FC<PokemonDetailProps> = ({ id }) => {
-  const [pokemon, setPokemon] = useState([]);
-  const [error, setError] = useState(null);
+  const [pokemon, setPokemon] = useState<Pokemon | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const pokemonQuery = gql`
-    query {
-      pokemon(id: "${id}") {
+    query getPokemon($id: String!) {
+      pokemon(id: $id) {
         id
         number
         name
@@ -23,14 +30,14 @@ export const PokemonDetail: React.FC<PokemonDetailProps> = ({ id }) => {
 
   useEffect(() => {
     client
-      .query({ query: pokemonQuery })
+      .query({ query: pokemonQuery, variables: { id } })
       .then((response) => {
         setPokemon(response.data.pokemon);
       })
       .catch((err) => {
         setError(err.toString());
       });
-  }, [id]);
+  }, [id, pokemonQuery]);
 
   if (error) {
     return <div>Error: {error}</div>;

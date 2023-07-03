@@ -5,7 +5,7 @@ export default function Header() {
     <>
       <header>
         <Link href="/">
-          <h1>ポケモン図鑑</h1>
+          <img src="https://zukan.pokemon.co.jp/img/logo.svg" alt="logo" />
         </Link>
       </header>
     </>

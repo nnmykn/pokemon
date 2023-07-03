@@ -7,8 +7,13 @@ interface PokemonListProps {
   first: number;
 }
 
+interface Pokemon {
+  id: string;
+  name: string;
+}
+
 export const PokemonList: React.FC<PokemonListProps> = ({ first }) => {
-  const [pokemons, setPokemons] = useState([]);
+  const [pokemons, setPokemons] = useState<Pokemon[] | null>(null);
   const [error, setError] = useState(null);
 
   const pokemonQuery = gql`
@@ -37,11 +42,12 @@ export const PokemonList: React.FC<PokemonListProps> = ({ first }) => {
 
   return (
     <ul>
-      {pokemons.map((pokemon) => (
-        <Link href={`/pokemon/${pokemon.id}`} key={pokemon.id}>
-          <li>{pokemon.name}</li>
-        </Link>
-      ))}
+      {pokemons &&
+        pokemons.map((pokemon) => (
+          <Link href={`/pokemon/${pokemon.id}`} key={pokemon.id}>
+            <li>{pokemon.name}</li>
+          </Link>
+        ))}
     </ul>
   );
 };

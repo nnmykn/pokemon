@@ -3,6 +3,13 @@ import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 import Header from "@/components/Header";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+
+const cache = new InMemoryCache();
+const client = new ApolloClient({
+  uri: `https://graphql-pokemon2.vercel.app/`,
+  cache,
+});
 
 // ポケモンのブランドカラーを定義
 const colors = {
@@ -20,8 +27,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     // ChakraProviderでChakra UIのコンポーネントを利用可能にする
     <ChakraProvider theme={theme}>
-      <Header />
-      <Component {...pageProps} />
+      <ApolloProvider client={client}>
+        <Header />
+        <Component {...pageProps} />
+      </ApolloProvider>
     </ChakraProvider>
   );
 }

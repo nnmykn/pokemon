@@ -13,7 +13,9 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n    query getPokemon($id: String!) {\n      pokemon(id: $id) {\n        id\n        number\n        name\n        image\n      }\n    }\n  ": types.GetPokemonDocument,
+    "\n  query getPokemon($id: String!) {\n    pokemon(id: $id) {\n      id\n      number\n      name\n      image\n      weight {\n        maximum\n        minimum\n      }\n      height {\n        maximum\n        minimum\n      }\n      classification\n      maxHP\n      maxCP\n      types\n    }\n  }\n": types.GetPokemonDocument,
+    "\n      query PokemonByName($name: String!) {\n        pokemon(name: $name) {\n          id\n          name\n          image\n        }\n      }\n    ": types.PokemonByNameDocument,
+    "\n      query Pokemons($first: Int!) {\n        pokemons(first: $first) {\n          id\n          name\n          image\n        }\n      }\n    ": types.PokemonsDocument,
 };
 
 /**
@@ -33,7 +35,15 @@ export function gql(source: string): unknown;
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n    query getPokemon($id: String!) {\n      pokemon(id: $id) {\n        id\n        number\n        name\n        image\n      }\n    }\n  "): (typeof documents)["\n    query getPokemon($id: String!) {\n      pokemon(id: $id) {\n        id\n        number\n        name\n        image\n      }\n    }\n  "];
+export function gql(source: "\n  query getPokemon($id: String!) {\n    pokemon(id: $id) {\n      id\n      number\n      name\n      image\n      weight {\n        maximum\n        minimum\n      }\n      height {\n        maximum\n        minimum\n      }\n      classification\n      maxHP\n      maxCP\n      types\n    }\n  }\n"): (typeof documents)["\n  query getPokemon($id: String!) {\n    pokemon(id: $id) {\n      id\n      number\n      name\n      image\n      weight {\n        maximum\n        minimum\n      }\n      height {\n        maximum\n        minimum\n      }\n      classification\n      maxHP\n      maxCP\n      types\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n      query PokemonByName($name: String!) {\n        pokemon(name: $name) {\n          id\n          name\n          image\n        }\n      }\n    "): (typeof documents)["\n      query PokemonByName($name: String!) {\n        pokemon(name: $name) {\n          id\n          name\n          image\n        }\n      }\n    "];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n      query Pokemons($first: Int!) {\n        pokemons(first: $first) {\n          id\n          name\n          image\n        }\n      }\n    "): (typeof documents)["\n      query Pokemons($first: Int!) {\n        pokemons(first: $first) {\n          id\n          name\n          image\n        }\n      }\n    "];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { gql } from "@apollo/client";
-import client from "../../../lib/graphqlClient";
+import React from "react";
+import { gql } from "../../../generated/gql";
+import { useQuery } from "@apollo/client";
+import { DocumentNode } from "graphql";
+import { Flex, Heading, Center } from "@chakra-ui/react";
 
 interface PokemonDetailProps {
   id: string;
@@ -11,48 +13,70 @@ interface Pokemon {
   number: string;
   name: string;
   image: string;
+  weight: string;
+  height: string;
+  classification: string;
+  maxHP: number;
+  maxCP: number;
+  types: string[];
 }
 
-export const PokemonDetail: React.FC<PokemonDetailProps> = ({ id }) => {
-  const [pokemon, setPokemon] = useState<Pokemon | null>(null);
-  const [error, setError] = useState<string | null>(null);
+interface PokemonQueryResult {
+  pokemon: Pokemon;
+}
 
-  const pokemonQuery = gql`
-    query getPokemon($id: String!) {
-      pokemon(id: $id) {
-        id
-        number
-        name
-        image
+const POKEMON_QUERY = gql(/* GraphQL */ `
+  query getPokemon($id: String!) {
+    pokemon(id: $id) {
+      id
+      number
+      name
+      image
+      weight {
+        maximum
+        minimum
       }
+      height {
+        maximum
+        minimum
+      }
+      classification
+      maxHP
+      maxCP
+      types
     }
-  `;
-
-  useEffect(() => {
-    client
-      .query({ query: pokemonQuery, variables: { id } })
-      .then((response) => {
-        setPokemon(response.data.pokemon);
-      })
-      .catch((err) => {
-        setError(err.toString());
-      });
-  }, [id, pokemonQuery]);
-
-  if (error) {
-    return <div>Error: {error}</div>;
   }
+`);
+
+export const PokemonDetail: React.FC<PokemonDetailProps> = ({ id }) => {
+  const { loading, error, data } = useQuery<PokemonQueryResult>(
+    POKEMON_QUERY as DocumentNode,
+    {
+      variables: { id },
+    }
+  );
+  if (loading) return <p>ロード中...</p>;
+  if (error) return <p>エラーが発生</p>;
+
+  if (!data) return <p>データがないよ</p>;
+  const pokemon = data.pokemon;
 
   return (
     <>
       <div>
-        {pokemon && (
-          <ul>
+        <Center>
+          <Flex alignItems={"center"}>
             <img src={pokemon.image} alt={pokemon.name} />
-            <h1 key={pokemon.id}>{pokemon.name}</h1>
-            <li>{pokemon.number}</li>
-          </ul>
-        )}
+            <Heading>{pokemon.name}</Heading>
+          </Flex>
+        </Center>
+        <ul>
+          <li>No.{pokemon.number}</li>
+          <li>分類: {pokemon.classification}</li>
+          <li>タイプ: {pokemon.types}</li>
+          <li>最大HP: {pokemon.maxHP}</li>
+          <li>最大CP: {pokemon.maxCP}</li>
+        </ul>
       </div>
     </>
   );

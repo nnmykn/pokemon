@@ -9,7 +9,10 @@ const config: CodegenConfig = {
             plugins: [],
             presetConfig: {
               gqlTagName: 'gql',
-            }
+            },
+            config: {
+              gqlImport: "@apollo/client#gql"
+            },
         },
     },
     ignoreNoDocuments: true,

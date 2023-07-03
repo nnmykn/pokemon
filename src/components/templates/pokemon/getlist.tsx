@@ -5,6 +5,7 @@ import Link from "next/link";
 
 interface PokemonListProps {
   first: number;
+  name?: string;
 }
 
 interface Pokemon {
@@ -12,11 +13,23 @@ interface Pokemon {
   name: string;
 }
 
-export const PokemonList: React.FC<PokemonListProps> = ({ first }) => {
+export const PokemonList: React.FC<PokemonListProps> = ({ first, name }) => {
   const [pokemons, setPokemons] = useState<Pokemon[] | null>(null);
   const [error, setError] = useState(null);
 
-  const pokemonQuery = gql`
+  let pokemonQuery;
+
+  if (name) {
+    pokemonQuery = gql`
+    query {
+      pokemon(name: "${name}") {
+        id
+        name
+      }
+    }
+  `;
+  } else {
+    pokemonQuery = gql`
     query {
       pokemons(first: ${first}) {
         id
@@ -24,17 +37,22 @@ export const PokemonList: React.FC<PokemonListProps> = ({ first }) => {
       }
     }
   `;
+  }
 
   useEffect(() => {
     client
       .query({ query: pokemonQuery })
       .then((response) => {
-        setPokemons(response.data.pokemons);
+        if (name) {
+          setPokemons([response.data.pokemon]);
+        } else {
+          setPokemons(response.data.pokemons);
+        }
       })
       .catch((err) => {
         setError(err.toString());
       });
-  }, [first]);
+  }, [first, name, pokemonQuery]);
 
   if (error) {
     return <div>Error: {error}</div>;
